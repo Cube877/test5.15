@@ -2,10 +2,49 @@
 //
 
 #include <iostream>
+#include<opencv.hpp>
+#include <cmath>
+
+using namespace cv;
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	Mat srcMat = imread("gtest.jpg", 0);
+	Mat dst = srcMat.clone();
+	int height = srcMat.rows;
+	int width = srcMat.cols;
+	uchar Lut[256];
+	float k = 1/2.2;
+	for (int i = 0; i < 256; i++)
+	{
+		float f = (float)i / 255;
+		f = pow(f, k);
+		Lut[i] = f * 255;
+	}
+	for(int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			dst.at<uchar>(i, j) = Lut[srcMat.at<uchar>(i, j)];
+		}
+	}
+	imshow("gamma矫正", dst);
+	//以上为1、3题，以下为2题
+	Mat srcMat2 = imread("lena.jpg");
+	Mat dst2;
+	vector<Mat> channels;
+	split(srcMat2, channels);
+	Mat B = channels.at(0);
+	Mat G = channels.at(1);
+	Mat R = channels.at(2);
+	equalizeHist(B, B);
+	equalizeHist(G, G);
+	equalizeHist(R, R);
+	merge(channels, dst2);
+	imshow("原图", srcMat2);
+	imshow("3通道图像直方图均衡", dst2);
+	waitKey(0);
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
