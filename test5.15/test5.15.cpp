@@ -18,9 +18,10 @@ int main()
 	float k = 1/2.2;
 	for (int i = 0; i < 256; i++)
 	{
-		float f = (float)i / 255;
+		/*float f = (float)i / 255;
 		f = pow(f, k);
-		Lut[i] = f * 255;
+		Lut[i] = f * 255;*/
+		Lut[i] = saturate_cast<uchar>(pow((float)(i / 255.0f), k)*255.0f);
 	}
 	for(int i = 0; i < height; i++)
 	{
